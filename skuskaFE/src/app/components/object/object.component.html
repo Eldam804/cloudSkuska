@@ -1,0 +1,18 @@
+<div>
+    <!-- Create Object Form -->
+    <form (ngSubmit)="onCreateObject()">
+      <label for="name">Name:</label>
+      <input type="text" id="name" [(ngModel)]="newObjectName" name="name" required>
+  
+      <label for="age">Age:</label>
+      <input type="number" id="age" [(ngModel)]="newObjectAge" name="age" required>
+  
+      <button type="submit">Create Object</button>
+    </form>
+  
+    <!-- List of Objects -->
+    <ul>
+      <li *ngFor="let object of objects">{{ object.name }} (Age: {{ object.age }})</li>
+    </ul>
+  </div>
+  
