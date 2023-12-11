@@ -1,0 +1,44 @@
+version: "3.3"
+
+services:
+  database:
+    image: neo4j:4.0.0
+    environment:
+      NEO4J_AUTH: none
+    ports:
+      - "7474:7474" # Access Neo4j Browser on the host at localhost:7474
+      - "7687:7687"
+
+  javaBe:
+    image: appbe
+    ports:
+      - "8080:8080" # Access your Java application on the host at localhost:8080
+    environment:
+      - SPRING_NEO4J_URI=bolt://database:7687
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    depends_on:
+      - database
+      - redis
+      - rabbitmq
+  redis:
+    image: "redis:alpine"
+  rabbitmq:
+    image: rabbitmq:latest
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"  # RabbitMQ port
+      - "15672:15672"  # RabbitMQ management UI port
+    environment:
+      RABBITMQ_DEFAULT_USER: username
+      RABBITMQ_DEFAULT_PASS: password
+    volumes:
+      - ./rabbitmq.config:/etc/rabbitmq/rabbitmq.config
+  frontend:
+    image: appfe
+    ports:
+      - "4200:80"
+    depends_on:
+      - javaBe
+volumes:
+  data:
+  logs:
